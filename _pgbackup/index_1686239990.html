@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>Blank Template for Bootstrap</title>
+        <!-- Bootstrap core CSS -->
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Custom styles for this template -->
+        <link href="style.css" rel="stylesheet">
+    </head>
+    <body>
+        <canvas id="hero-lightpass"></canvas>
+
+        <!-- Bootstrap core JavaScript
+    ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="assets/js/popper.min.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+        <script>
+          const html = document.documentElement;
+          const canvas = document.getElementById("hero-lightpass");
+          const context = canvas.getContext("2d");
+      
+          const frameCount = 150;
+          const currentFrame = index => (
+            `Animation_01/${index.toString().padStart(4, '0')}.png`
+          );
+      
+          const preloadImages = () => {
+            for (let i = 1; i < frameCount; i++) {
+              const img = new Image();
+              img.src = currentFrame(i);
+            }
+          };
+      
+          const img = new Image();
+          img.src = currentFrame(1);
+          canvas.width = 1920 * 0.75;
+          canvas.height = 1080 * 0.75;
+          img.onload = function() {
+            context.drawImage(img, 0, 0);
+          };
+      
+          const updateImage = index => {
+            const newImg = new Image();
+            newImg.src = currentFrame(index);
+            newImg.onload = function() {
+              context.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+              context.drawImage(newImg, 0, 0);
+            };
+          };
+      
+          window.addEventListener('scroll', () => {  
+            const scrollTop = html.scrollTop;
+            const maxScrollTop = html.scrollHeight - window.innerHeight - 0.25*html.scrollTop;
+            const scrollFraction = scrollTop / maxScrollTop;
+            const frameIndex = Math.min(
+              frameCount - 1,
+              Math.ceil(scrollFraction * frameCount)
+            );
+      
+            requestAnimationFrame(() => updateImage(frameIndex + 1));
+          });
+      
+          preloadImages();
+        </script>
+    </body>
+</html>
